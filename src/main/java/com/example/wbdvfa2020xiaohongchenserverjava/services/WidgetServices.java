@@ -1,33 +1,31 @@
 package com.example.wbdvfa2020xiaohongchenserverjava.services;
 
 import com.example.wbdvfa2020xiaohongchenserverjava.models.Widget;
+import com.example.wbdvfa2020xiaohongchenserverjava.repositories.WidgetRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
+@Service
 public class WidgetServices {
 
-    List<Widget> widgets = new ArrayList<>();
-
-
+    @Autowired
+    WidgetRepository widgetRepository;
 
     /**
-     * Creates a new Widget instance and add it to the
-     * existing collection of widgets for a topic whose ID is
-     * tid. Returns new widget with a unique identifier
+     * Creates a new Widget instance and saves it to a
+     * widgets table for a topic whose ID is tid. Returns
+     * new widget inserted in the database
      *
-     * @param tid topic id
+     * @param tid    topic id
      * @param widget widget
      * @return new widget
      */
     public Widget createWidget(String tid, Widget widget) {
-        widget.setId(String.valueOf(new Date().getTime()+1));
-        widget.setTid(tid);
-        widgets.add(widget);
-        return widget;
+        widget.setTopicId(tid);
+        return widgetRepository.save(widget);
     }
 
     /**
@@ -36,20 +34,8 @@ public class WidgetServices {
      * @param tId
      * @return
      */
-    public List<Widget> findWidgetsForTopic(String tId){
-        List<Widget> wl = new ArrayList<>();
-        for (Widget w : widgets) {
-            if (w.getTid().equals(tId)) {
-                wl.add(w);
-            }
-        }
-        wl.sort(new Comparator<Widget>() {
-            @Override
-            public int compare(Widget o1, Widget o2) {
-                return o1.getWidgetOrder()-o2.getWidgetOrder();
-            }
-        });
-        return wl;
+    public List<Widget> findWidgetsForTopic(String tId) {
+        return widgetRepository.findWidgetsForTopic(tId);
     }
 
     /**
@@ -57,35 +43,18 @@ public class WidgetServices {
      * HTTP body. Returns 1 if successful, 0 otherwise
      *
      * @param wid
-     * @param widget
+     * @param newWidget
      * @return 1 if successful, 0 otherwise
      */
-    public Integer updateWidget(String wid, Widget widget) {
-        Integer temp = null;
-        for (Widget w : widgets) {
-            if (w.getId().equals(wid)) {
-                temp = w.getWidgetOrder();
-                System.out.println("pre: "+temp);
-                w.setName(widget.getName());
-                w.setType(widget.getType());
-                w.setWidgetOrder(widget.getWidgetOrder());
-                w.setSize(widget.getSize());
-                System.out.println("post"+w.getWidgetOrder());
-                System.out.println("post temp"+temp);
-
-                System.out.println("-------------------" + w.getId());
-                for (Widget w1: widgets){
-                    if(!w1.getId().equals(w.getId()) && w1.getWidgetOrder().equals(w.getWidgetOrder())){
-                        w1.setWidgetOrder(temp);
-
-                    }
-
-                }
-                return 1;
-            }
+    public Widget updateWidget(Integer wid, Widget newWidget) {
+        Optional optional = widgetRepository.findById(wid);
+        if (optional.isPresent()) {
+            newWidget.setId(wid);
+            return widgetRepository.save(newWidget);
+        } else {
+            return null;
         }
 
-        return 0;
     }
 
     /**
@@ -95,14 +64,8 @@ public class WidgetServices {
      * @param wid
      * @return 1 if successful, 0 otherwise
      */
-    public int deleteWidget(String wid){
-        for (Widget w : widgets) {
-            if (w.getId().equals(wid)) {
-                widgets.remove(w);
-                return 1;
-            }
-        }
-        return 0;
+    public void deleteWidget(Integer wid) {
+        widgetRepository.deleteById(wid);
     }
 
     /**
@@ -111,7 +74,7 @@ public class WidgetServices {
      * @return
      */
     public List<Widget> findAllWidgets() {
-        return widgets;
+        return (List<Widget>) widgetRepository.findAll();
     }
 
     /**
@@ -120,17 +83,9 @@ public class WidgetServices {
      * @param widgetId
      * @return
      */
-    public Widget findWidgetById(String widgetId) {
-        for (Widget w : widgets) {
-            if (w.getId().equals(widgetId)) {
-                return w;
-            }
-        }
-        return null;
+    public Widget findWidgetById(Integer widgetId) {
+        return widgetRepository.findById(widgetId).get();
     }
-
-
-
 
 
 }

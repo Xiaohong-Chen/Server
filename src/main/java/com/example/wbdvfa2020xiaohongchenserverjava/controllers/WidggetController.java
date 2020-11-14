@@ -2,6 +2,7 @@ package com.example.wbdvfa2020xiaohongchenserverjava.controllers;
 
 import com.example.wbdvfa2020xiaohongchenserverjava.models.Widget;
 import com.example.wbdvfa2020xiaohongchenserverjava.services.WidgetServices;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,7 +11,8 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class WidggetController {
 
-    WidgetServices widgetServices = new WidgetServices();
+    @Autowired
+    WidgetServices widgetServices;
 
     @PostMapping("/api/topics/{tid}/widgets")
     public Widget createWidget(@PathVariable("tid") String tid, @RequestBody Widget widget) {
@@ -23,13 +25,13 @@ public class WidggetController {
     }
 
     @PutMapping("/api/widgets/{wid}")
-    public int updateWidget(@PathVariable("wid") String wid, @RequestBody Widget widget) {
+    public Widget updateWidget(@PathVariable("wid") Integer wid, @RequestBody Widget widget) {
         return widgetServices.updateWidget(wid, widget);
     }
 
     @DeleteMapping("/api/widgets/{wid}")
-    public int deleteWidget(@PathVariable("wid") String wid) {
-        return widgetServices.deleteWidget(wid);
+    public void deleteWidget(@PathVariable("wid") Integer wid) {
+        widgetServices.deleteWidget(wid);
     }
 
     @GetMapping("/api/widgets")
@@ -38,7 +40,7 @@ public class WidggetController {
     }
 
     @GetMapping("/api/widgets/{wid}")
-    public Widget findWidgetById(@PathVariable("wid") String wid){
+    public Widget findWidgetById(@PathVariable("wid") Integer wid){
         return widgetServices.findWidgetById(wid);
     }
 

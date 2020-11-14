@@ -1,54 +1,51 @@
 package com.example.wbdvfa2020xiaohongchenserverjava.models;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "widgets")
 public class Widget {
 
-    //Widget's unique identifier
-    private String id;
-    //Optional name of the widget
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id; //Unique identifier for this widget
+    // Topic this lesson belongs to
+    private String topicId;
+    // Optional name of the widget
     private String name;
-    //Type of the widget, e.g., Heading, List, Paragraph, Image, YouTube, HTML,Link
+    // Type of the widget, e.g., Heading, List, Paragraph, Image, YouTube, HTML, Link
     private String type;
-    //Order with respect to widgets in the same list
+    // Order with respect to widgets in the same list
     private Integer widgetOrder;
-    //Plain text useful for heading text, paragraph text, link text, etc
+    // Plain text useful for heading text, paragraph text, link text, etc
     private String text;
-    //Absolute or relative URL referring to online resource
+    // Absolute or relative URL referring to online resource
     private String src;
-    //Useful to represent size of widget, e.g., heading size
+    // Useful to represent size of widget, e.g., heading size
     private Integer size;
-    //Widget's horizontal & vertical size, e.g., Image's or YouTube's width & height
-    private Integer width ,height;
-    //CSS class implementing some CSS rule and transformations configured in some CSS rule
+    // Widget's horizontal & vertical size, e.g., Image's or YouTube's width & height
+    private Integer width, height;
+    // CSS class implementing some CSS rule and transformations configured in some CSS rule
     private String cssClass;
-    //CSS transformations applied to the widget
+    // CSS transformations applied to the widget
     private String style;
-    //Some arbitrary initial value interpreted by the widget
+    // Some arbitrary initial value interpreted by the widget
     private String value;
-    //Topic Id
-    private String tid;
 
-    public Widget() {
-    }
-
-    public Widget(String id, String name, String type) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-    }
-
-    public Widget(String id, String name, String type, String tid) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.tid = tid;
-    }
-
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(String topicId) {
+        this.topicId = topicId;
     }
 
     public String getName() {
@@ -137,13 +134,5 @@ public class Widget {
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    public String getTid() {
-        return tid;
-    }
-
-    public void setTid(String tid) {
-        this.tid = tid;
     }
 }
