@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "widgets")
-public class Widget {
+public class Widget implements Comparable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -134,5 +134,12 @@ public class Widget {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+
+    @Override
+    public int compareTo(Object o) {
+        Widget w = (Widget) o;
+        return this.widgetOrder - w.getWidgetOrder();
     }
 }

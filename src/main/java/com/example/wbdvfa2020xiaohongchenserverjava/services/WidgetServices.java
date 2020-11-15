@@ -35,7 +35,9 @@ public class WidgetServices {
      * @return
      */
     public List<Widget> findWidgetsForTopic(String tId) {
-        return widgetRepository.findWidgetsForTopic(tId);
+        List<Widget> widgets = widgetRepository.findWidgetsForTopic(tId);
+        Collections.sort(widgets);
+        return widgets;
     }
 
     /**
@@ -49,12 +51,23 @@ public class WidgetServices {
     public Widget updateWidget(Integer wid, Widget newWidget) {
         Optional optional = widgetRepository.findById(wid);
         if (optional.isPresent()) {
+            //get old widget
+            Widget old = (Widget) optional.get();
+            //check if widget order is changed or not
+            int oldOrder = old.getWidgetOrder();
+            int newOrder = newWidget.getWidgetOrder();
+            //update another widget's order number
+            if(oldOrder != newOrder){
+                Widget otherWidgetToBeUpdated = widgetRepository.findWidgetByOrder(newOrder,old.getTopicId());
+                otherWidgetToBeUpdated.setWidgetOrder(oldOrder);
+                widgetRepository.save(otherWidgetToBeUpdated);
+            }
+
             newWidget.setId(wid);
             return widgetRepository.save(newWidget);
         } else {
             return null;
         }
-
     }
 
     /**
@@ -64,8 +77,16 @@ public class WidgetServices {
      * @param wid
      * @return 1 if successful, 0 otherwise
      */
-    public void deleteWidget(Integer wid) {
+    public void deleteWidget(Integer wid, String tId) {
+
         widgetRepository.deleteById(wid);
+        List<Widget> widgets = widgetRepository.findWidgetsForTopic(tId);
+        Collections.sort(widgets);
+
+        for(int i =0; i < widgets.size(); i++){
+            widgets.get(i).setWidgetOrder(i+1);
+            widgetRepository.save(widgets.get(i));
+        }
     }
 
     /**

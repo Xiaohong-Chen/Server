@@ -29,9 +29,10 @@ public class WidggetController {
         return widgetServices.updateWidget(wid, widget);
     }
 
-    @DeleteMapping("/api/widgets/{wid}")
-    public void deleteWidget(@PathVariable("wid") Integer wid) {
-        widgetServices.deleteWidget(wid);
+    @DeleteMapping("/api/topics/{tid}/widgets/{wid}")
+    public String deleteWidget(@PathVariable("wid") Integer wid,@PathVariable("tid") String tid ) {
+        widgetServices.deleteWidget(wid,tid);
+        return "0";
     }
 
     @GetMapping("/api/widgets")
